@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mr. Premium — a student assistant expert for formal emails, CVs, public speaking, interview preparation, and extracurricular activities.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';">
+  <title style="white-space: nowrap;">Mr. Premium - Student Assistant Expert</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --bg:          #07091a;
+  --bg2:         #0f1230;
+  --bg3:         #1e1040;
+  --gold:        #ffd166;
+  --gold-light:  #fff0a3;
+  --cyan:        #7dd3fc;
+  --violet:      #a78bfa;
+  --pink:        #f0abfc;
+  --green:       #86efac;
+  --red:         #fb7185;
+  --text:        #f8f7ff;
+  --muted:       rgba(248,247,255,0.72);
+  --line:        rgba(255,255,255,0.14);
+  --card-bg:     rgba(255,255,255,0.08);
+  --card-strong: rgba(255,255,255,0.13);
+  --shadow:      0 24px 64px rgba(0,0,0,0.45);
+  --inner:       inset 0 1px 0 rgba(255,255,255,0.12);
+  --radius-lg:   28px;
+  --radius-md:   18px;
+  --radius-sm:   12px;
+  --font:        'Sora', sans-serif;
+  --mono:        'DM Mono', monospace;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  min-height: 100vh;
+  font-family: var(--font);
+  font-size: 16px;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(167,139,250,.28), transparent 30%),
+    radial-gradient(circle at 90% 10%, rgba(255,209,102,.20), transparent 30%),
+    radial-gradient(circle at 70% 85%, rgba(125,211,252,.15), transparent 32%),
+    linear-gradient(160deg, var(--bg) 0%, var(--bg2) 50%, var(--bg3) 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* Subtle grid overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+a { text-decoration: none; color: inherit; }
+
+/* Accessibility: skip link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  padding: 10px 18px;
+  background: var(--gold);
+  color: #111;
+  font-weight: 700;
+  border-radius: 0 0 var(--radius-sm) 0;
+  z-index: 999;
+  transition: top .2s;
+}
+.skip-link:focus { top: 0; }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { border-radius: 99px; background: linear-gradient(var(--gold), var(--violet)); }
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.topbar {
+  position: sticky;
+  top: 14px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: min(1200px, calc(100% - 28px));
+  margin: 14px auto 0;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(7,9,26,.72);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow), var(--inner);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 17px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.brand-badge {
+  display: grid;
+  place-items: center;
+  width: 38px; height: 38px;
+  border-radius: 13px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #121212;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  box-shadow: 0 0 24px rgba(255,209,102,.30);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.nav-btn {
+  padding: 9px 14px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color .2s, border-color .2s, background .2s, transform .2s;
+}
+.nav-btn:hover, .nav-btn.active {
+  color: var(--text);
+  border-color: var(--line);
+  background: var(--card-bg);
+  transform: translateY(-1px);
+}
+
+.menu-btn {
+  display: none;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: var(--text);
+  background: var(--card-bg);
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+main {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, calc(100% - 28px));
+  margin: 0 auto;
+}
+
+.section { display: none; padding: 48px 0 72px; }
+.section.active { display: block; animation: fadeUp .4s ease both; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255,209,102,.32);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(255,209,102,.08);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.eyebrow::before {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #fff 10%, var(--gold) 42%, var(--pink) 70%, var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+h1 { font-size: clamp(40px, 6.5vw, 82px); line-height: .96; letter-spacing: -2.5px; }
+h2 { font-size: clamp(32px, 4.5vw, 62px); line-height: .97; letter-spacing: -1.8px; }
+h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+
+.lead { color: var(--muted); line-height: 1.75; font-size: 17px; margin-top: 14px; }
+
+/* ============================================================
+   CARDS & PANELS
+   ============================================================ */
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, var(--card-strong), var(--card-bg));
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow), var(--inner);
+}
+.panel { padding: 26px; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 11px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  transition: transform .22s, box-shadow .22s, border-color .22s, background .22s;
+}
+.btn-primary {
+  color: #141414;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-color: transparent;
+  box-shadow: 0 10px 28px rgba(255,209,102,.22);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(255,209,102,.30); }
+.btn-secondary { color: var(--text); background: rgba(255,255,255,.08); }
+.btn-secondary:hover { transform: translateY(-2px); border-color: rgba(255,209,102,.40); background: rgba(255,209,102,.10); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 24px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--card-bg);
+  font-size: 14px;
+  font-weight: 600;
+  transition: color .2s, border-color .2s, transform .2s;
+}
+.back-btn:hover { color: var(--text); border-color: rgba(255,209,102,.4); transform: translateX(-3px); }
+
+/* ============================================================
+   FORM ELEMENTS
+   ============================================================ */
+label {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+label .opt { font-weight: 400; text-transform: none; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  color: var(--text);
+  background: rgba(0,0,0,.26);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: rgba(255,209,102,.6);
+  box-shadow: 0 0 0 3px rgba(255,209,102,.10);
+}
+select option { color: #111; background: #fff; }
+textarea { resize: vertical; min-height: 88px; }
+
+.form-section-title {
+  color: var(--gold);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 18px 0 14px;
+}
+.form-section-title:first-child { margin-top: 0; }
+
+/* ============================================================
+   SECTION HEADING
+   ============================================================ */
+.section-heading { max-width: 840px; margin-bottom: 32px; }
+.section-heading h2 { margin-top: 12px; }
+
+/* ============================================================
+   HOME: HERO
+   ============================================================ */
+.hero {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 28px;
+  align-items: center;
+  min-height: calc(100vh - 130px);
+  padding: 48px 0 32px;
+}
+.hero-text { padding: 36px; }
+.hero-text h1 { margin-top: 16px; }
+
+.hero-visual { display: grid; place-items: center; position: relative; }
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  width: 72%; height: 72%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,209,102,.20), rgba(167,139,250,.10) 50%, transparent 72%);
+  filter: blur(2px);
+  animation: pulse 5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(.96); opacity: .75; }
+  50%       { transform: scale(1.05); opacity: 1; }
+}
+
+.mascot-card { text-align: center; padding: 28px; }
+.mascot-subtitle { color: var(--muted); font-size: 15px; margin-top: 6px; }
+.mascot-h2 { font-size: 26px; }
+
+.mascot-photo {
+  display: block;
+  width: min(100%, 260px);
+  margin: 0 auto 14px;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 30px 40px rgba(0,0,0,.55));
+}
+
+/* ============================================================
+   HOME: CHOICE GRID
+   ============================================================ */
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-top: 28px;
+}
+.choice-card {
+  min-height: 148px;
+  padding: 20px 16px;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: linear-gradient(145deg, var(--card-strong), var(--card-bg));
+  box-shadow: var(--shadow), var(--inner);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  transition: transform .22s, border-color .22s, box-shadow .22s;
+  cursor: pointer;
+}
+.choice-card:hover { transform: translateY(-7px); border-color: rgba(255,209,102,.45); box-shadow: 0 28px 60px rgba(0,0,0,.35); }
+.choice-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.choice-card strong { font-size: clamp(15px, 1.3vw, 19px); line-height: 1.1; }
+.choice-card small  { font-size: 13px; color: var(--muted); line-height: 1.35; }
+
+/* ============================================================
+   HOME: LEARNING HUB
+   ============================================================ */
+.learning { margin-top: 28px; padding: 28px; }
+.learning h2 { margin: 12px 0 8px; max-width: 760px; }
+
+.learning-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-top: 22px;
+}
+.learning-card {
+  min-height: 180px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+  box-shadow: 0 14px 40px rgba(0,0,0,.22), var(--inner);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform .22s, border-color .22s, box-shadow .22s;
+}
+.learning-card:hover { transform: translateY(-6px); border-color: rgba(255,209,102,.42); box-shadow: 0 22px 56px rgba(0,0,0,.32); }
+.learning-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.learning-num {
+  display: grid;
+  place-items: center;
+  width: 38px; height: 38px;
+  border-radius: 13px;
+  color: #111;
+  background: linear-gradient(135deg, var(--gold), var(--cyan));
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.learning-card h3 { font-size: clamp(16px, 1.3vw, 20px); color: #fff9e8; line-height: 1.1; margin: 4px 0 2px; }
+.learning-card p  { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.learning-cta     { margin-top: auto; font-size: 12px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: .6px; }
+
+.learning-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+.stat-box { padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: rgba(0,0,0,.16); text-align: center; }
+.stat-box strong { display: block; font-size: 30px; color: var(--gold); line-height: 1; }
+.stat-box span   { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+/* ============================================================
+   DRAFT SAVED BANNER
+   ============================================================ */
+.draft-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid rgba(134,239,172,.30);
+  border-radius: var(--radius-sm);
+  background: rgba(134,239,172,.08);
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  opacity: 0;
+  transition: opacity .4s;
+}
+.draft-banner.visible { opacity: 1; }
+
+/* ============================================================
+   SCORE CIRCLE
+   ============================================================ */
+.score-circle {
+  display: grid;
+  place-items: center;
+  width: 160px; height: 160px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  font-size: 32px;
+  font-weight: 800;
+  background: conic-gradient(var(--gold) 0deg, rgba(255,255,255,.10) 0deg);
+  box-shadow: 0 0 28px rgba(255,209,102,.18), var(--inner);
+  transition: background .5s;
+  /* Inner ring for visual polish */
+  outline: 6px solid rgba(0,0,0,.25);
+  outline-offset: -12px;
+}
+
+/* ============================================================
+   OUTPUT / PREVIEW AREAS
+   ============================================================ */
+.output-pre {
+  width: 100%;
+  padding: 18px;
+  min-height: 220px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.70;
+  color: #fff9e8;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: rgba(0,0,0,.24);
+  box-shadow: var(--inner);
+}
+.output-label {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #111;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   SUGGESTION / CRITERIA LISTS
+   ============================================================ */
+.suggestion-list { list-style: none; padding: 0; }
+.suggestion-list li { padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.55; color: var(--muted); }
+.suggestion-list li:last-child { border-bottom: none; }
+.sug-good { color: var(--green) !important; }
+.sug-warn { color: var(--gold) !important; }
+.sug-bad  { color: var(--red) !important; }
+.crit-pass { color: var(--green); }
+.crit-mid  { color: var(--gold); }
+.crit-fail { color: var(--red); }
+
+/* ============================================================
+   TWO-COLUMN TOOL LAYOUT
+   ============================================================ */
+.tool-grid  { display: grid; grid-template-columns: 1.3fr .7fr; gap: 22px; align-items: start; }
+.two-col    { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.results-col { display: grid; gap: 18px; }
+
+/* ============================================================
+   CV EXPERIENCE BUILDER
+   ============================================================ */
+.exp-builder {
+  margin: 12px 0 22px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(0,0,0,.14);
+}
+.exp-added { margin-top: 12px; padding-left: 18px; }
+.exp-added li { margin-bottom: 6px; font-size: 14px; color: var(--muted); cursor: pointer; }
+.exp-added li:hover { color: var(--red); }
+.exp-added li:hover::after { content: " (click to remove)"; font-size: 11px; }
+
+/* ============================================================
+   SPEAKING & INTERVIEW
+   ============================================================ */
+.two-panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.timer {
+  font-family: var(--mono);
+  font-size: clamp(52px, 8vw, 88px);
+  font-weight: 500;
+  color: var(--gold);
+  text-align: center;
+  margin: 18px 0;
+  padding: 16px 0;
+  letter-spacing: -2px;
+  text-shadow: 0 0 24px rgba(255,209,102,.28);
+}
+
+.tip-box {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(0,0,0,.18);
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+.big-question { font-size: 22px; font-weight: 700; color: var(--text); }
+
+.hint-block { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.hint-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.hint-block strong { color: var(--gold); display: block; margin-bottom: 4px; font-size: 14px; text-transform: uppercase; letter-spacing: .5px; }
+.hint-block span   { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+.divider { border: none; border-top: 1px solid var(--line); margin: 22px 0; }
+
+/* ============================================================
+   EXTRACURRICULAR
+   ============================================================ */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0;
+}
+.info-card { padding: 20px; border: 1px solid var(--line); border-radius: 22px; background: rgba(0,0,0,.16); }
+.info-card h4 { color: var(--gold); font-size: 16px; margin-bottom: 10px; }
+
+.clean-list { list-style: none; padding: 0; }
+.clean-list li { padding: 6px 0; font-size: 14px; color: var(--muted); line-height: 1.55; border-bottom: 1px solid rgba(255,255,255,.06); }
+.clean-list li:last-child { border-bottom: none; }
+.clean-list li::before { content: "→ "; color: var(--gold); }
+
+.example-box { margin-top: 22px; padding: 22px; border: 1px solid rgba(255,209,102,.22); border-radius: 22px; background: rgba(255,209,102,.05); }
+.example-box h4 { color: var(--gold); font-size: 18px; margin-bottom: 14px; }
+.example-box pre {
+  max-height: 520px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.72;
+  color: #fff9e8;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0,0,0,.22);
+  margin-bottom: 18px;
+}
+.example-box p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+.example-box-footer { margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.12); }
+
+.mun-heading { font-size: clamp(26px, 3.5vw, 44px); letter-spacing: -1px; margin-bottom: 14px; }
+.procedure-text { color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  width: min(1200px, calc(100% - 28px));
+  margin: 28px auto;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(7,9,26,.52);
+  backdrop-filter: blur(14px);
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .choice-grid, .learning-grid { grid-template-columns: repeat(3, 1fr); }
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-visual { order: -1; }
+  .mascot-photo { max-height: 380px; }
+}
+
+@media (max-width: 860px) {
+  .nav {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    position: absolute;
+    left: 14px; right: 14px;
+    top: calc(100% + 8px);
+    padding: 14px;
+    gap: 6px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(7,9,26,.95);
+    backdrop-filter: blur(18px);
+  }
+  .nav.open { display: flex; }
+  .nav-btn { text-align: center; padding: 12px; }
+  .menu-btn { display: block; }
+  .tool-grid  { grid-template-columns: 1fr; }
+  .info-grid  { grid-template-columns: 1fr; }
+  .two-col    { grid-template-columns: 1fr; }
+  .two-panel-grid { grid-template-columns: 1fr; }
+  .learning-stats { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .choice-grid  { grid-template-columns: repeat(2, 1fr); }
+  .learning-grid { grid-template-columns: repeat(2, 1fr); }
+  h1 { letter-spacing: -1.2px; }
+}
+
+@media (max-width: 440px) {
+  .choice-grid { grid-template-columns: 1fr; }
+}
+  </style>
+</head>
+
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<!-- TOPBAR -->
+<header class="topbar" role="banner">
+  <a href="#" class="brand" onclick="showSection('home'); return false;" aria-label="Mr. Premium home">
+    <span class="brand-badge" aria-hidden="true">MP</span>
+    <span>Mr. Premium</span>
+  </a>
+
+  <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">☰</button>
+
+  <nav class="nav" id="navMenu" role="navigation" aria-label="Main navigation">
+    <button class="nav-btn" onclick="showSection('email')"           data-section="email">Email</button>
+    <button class="nav-btn" onclick="showSection('cv')"              data-section="cv">CV</button>
+    <button class="nav-btn" onclick="showSection('speaking')"        data-section="speaking">Public Speaking</button>
+    <button class="nav-btn" onclick="showSection('interview')"       data-section="interview">Interviews</button>
+    <button class="nav-btn" onclick="showSection('extracurricular')" data-section="extracurricular">Extracurricular</button>
+    <button class="nav-btn lang-btn" type="button" onclick="toggleLanguage()" id="langToggle" aria-label="Change language to Romanian">
+  RO
+</button>
+  </nav>
+</header>
+
+<main id="main-content" role="main">
+
+  <!-- =========================================================
+       HOME
+       ========================================================= -->
+  <section id="home" class="section active" aria-label="Home">
+    <div class="hero">
+      <div class="hero-text card panel">
+        <p class="eyebrow">Student communication assistant</p>
+        <h1 class="gradient-text" style="line-height: 1.2;">Choose what you want to improve today.</h1>
+        <p class="lead" style="text-align: justify;">
+          Mr. Premium helps high school and university students write formal emails,
+          build better CVs, speak with confidence, prepare for interviews, and further
+          help with their extracurricular activities.
+        </p>
+      </div>
+
+      <div class="hero-visual">
+        <div class="mascot-card card">
+          <img class="mascot-photo" src="premiumcelfrumos.png" alt="Mr. Premium Mascot (confident and well-dressed)">
+          <h2 class="mascot-h2">Mr. Premium</h2>
+          <p class="mascot-subtitle">A polite, confident, and helpful guide, at your service.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="choice-grid" role="list" aria-label="Navigation shortcuts">
+      <button class="choice-card" onclick="showSection('email')"           role="listitem" aria-label="Go to Formal Email section">
+        <strong>Formal Email</strong>
+        <small>Write clear, polite academic emails.</small>
+      </button>
+      <button class="choice-card" onclick="showSection('cv')"              role="listitem" aria-label="Go to CV section">
+        <strong>CV</strong>
+        <small>Build and improve your student CV.</small>
+      </button>
+      <button class="choice-card" onclick="showSection('speaking')"        role="listitem" aria-label="Go to Public Speaking section">
+        <strong>Public Speaking</strong>
+        <small>Train structure, voice, and confidence.</small>
+      </button>
+      <button class="choice-card" onclick="showSection('interview')"       role="listitem" aria-label="Go to Interviews section">
+        <strong>Interviews</strong>
+        <small>Practice common interview answers.</small>
+      </button>
+      <button class="choice-card" onclick="showSection('extracurricular')" role="listitem" aria-label="Go to Extracurricular section">
+        <strong>Extracurricular</strong>
+        <small>Explore MUN and build your profile.</small>
+      </button>
+    </div>
+
+    <div class="learning card" style="margin-top:28px;">
+      <p class="eyebrow">Premium Learning Hub</p>
+      <h2 class="gradient-text">Everything you need to prepare for, offering a premium experience.</h2>
+      <p class="lead" style="max-width:780px;">
+        A learning hub made for students who want to improve formal writing,
+        applications, confidence, interviews, and extracurricular strategy.
+      </p>
+
+      <div class="learning-grid">
+        <button class="learning-card" onclick="showSection('email')"           aria-label="Formal Writing module">
+          <span class="learning-num" aria-hidden="true">01</span>
+          <h3>Formal Writing</h3>
+          <p>Email formats, tone control, and clear requests.</p>
+          <span class="learning-cta">Enter →</span>
+        </button>
+        <button class="learning-card" onclick="showSection('cv')"              aria-label="Application Profile module">
+          <span class="learning-num" aria-hidden="true">02</span>
+          <h3>Application Profile</h3>
+          <p>CV structure, skills, and education quality.</p>
+          <span class="learning-cta">Enter →</span>
+        </button>
+        <button class="learning-card" onclick="showSection('speaking')"        aria-label="Confidence Training module">
+          <span class="learning-num" aria-hidden="true">03</span>
+          <h3>Confidence Training</h3>
+          <p>Public speaking tips, speech parts, and with a timer.</p>
+          <span class="learning-cta">Enter →</span>
+        </button>
+        <button class="learning-card" onclick="showSection('interview')"       aria-label="Interview Readiness module">
+          <span class="learning-num" aria-hidden="true">04</span>
+          <h3>Interview Readiness</h3>
+          <p>View hints, helpful questions, and tips.</p>
+          <span class="learning-cta">Enter →</span>
+        </button>
+        <button class="learning-card" onclick="showSection('extracurricular')" aria-label="Extracurricular Strategy module">
+          <span class="learning-num" aria-hidden="true">05</span>
+          <h3>Extracurricular Strategy</h3>
+          <p>MUN writing, procedure, and resolution examples.</p>
+          <span class="learning-cta">Enter →</span>
+        </button>
+      </div>
+
+      <div class="learning-stats">
+        <div class="stat-box"><strong>5</strong><span>core modules</span></div>
+        <div class="stat-box"><strong>20+</strong><span>interactive tools</span></div>
+        <div class="stat-box"><strong>100%</strong><span>student-focused</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       EMAIL
+       ========================================================= -->
+  <section id="email" class="section" aria-label="Formal Email Helper">
+    <button class="back-btn" onclick="showSection('home')" aria-label="Back to home">← Back</button>
+
+    <div class="section-heading">
+      <p class="eyebrow">Formal Email Helper</p>
+      <h2 class="gradient-text">Build, check, and improve a formal email.</h2>
+      <p class="lead">Fill in the details and Mr. Premium will generate a structured email, score it, and give you proper feedback.</p>
+    </div>
+
+    <div id="emailDraftBanner" class="draft-banner" role="status" aria-live="polite">✓ Draft saved locally</div>
+
+    <div class="tool-grid">
+      <form class="card panel" onsubmit="event.preventDefault(); analyzeEmail();" aria-label="Email builder form">
+        <div class="two-col">
+          <div>
+            <label for="emailSender">Your name</label>
+            <input id="emailSender" type="text" placeholder="Alex Popescu" autocomplete="name" maxlength="80">
+          </div>
+          <div>
+            <label for="emailTo">Recipient</label>
+            <input id="emailTo" type="text" placeholder="Professor Smith" maxlength="120" aria-required="true">
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <label for="emailPurpose">Purpose</label>
+            <select id="emailPurpose" aria-label="Email purpose" aria-required="true">
+              <option value="ask for information">Ask for information</option>
+              <option value="request a meeting">Request a meeting</option>
+              <option value="send an assignment">Send an assignment</option>
+              <option value="apply for an opportunity">Apply for an opportunity</option>
+              <option value="apologise for a delay">Apologise for a delay</option>
+              <option value="follow up politely">Follow up politely</option>
+            </select>
+          </div>
+          <div>
+            <label for="emailTone">Tone</label>
+            <select id="emailTone" aria-label="Email tone">
+              <option value="formal">Formal</option>
+              <option value="warm">Warm but professional</option>
+              <option value="concise">Short and direct</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="emailSubject">Subject line</label>
+        <input id="emailSubject" type="text" placeholder="Request for meeting about my application" maxlength="160" aria-required="true">
+
+        <label for="emailContext">Context</label>
+        <textarea id="emailContext" rows="3" placeholder="Explain the situation briefly." maxlength="1000" aria-required="true"></textarea>
+
+        <label for="emailRequest">Main request</label>
+        <textarea id="emailRequest" rows="3" placeholder="What exactly do you need from the recipient?" maxlength="800" aria-required="true"></textarea>
+
+        <label for="emailDeadline">Deadline / preferred time <span class="opt">(optional)</span></label>
+        <input id="emailDeadline" type="text" placeholder="e.g. by Friday / before the interview" maxlength="80">
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="submit">Generate &amp; check</button>
+          <button class="btn btn-secondary" type="button" onclick="clearEmailForm()">Clear</button>
+          <button class="btn btn-secondary" type="button" onclick="copyText('emailOutput', this)">Copy email</button>
+        </div>
+      </form>
+
+      <div class="results-col">
+        <div class="card panel" style="text-align:center;" aria-live="polite">
+          <div class="score-circle" id="emailScoreCircle" role="img" aria-label="Email quality score">
+            <span id="emailScore">0</span>%
+          </div>
+          <h3>Email quality score</h3>
+          <p id="emailAdvice" style="color:var(--muted);font-size:14px;margin-top:8px;">Complete the form and press Generate &amp; check.</p>
+        </div>
+
+        <div class="card panel">
+          <h3>Mr. Premium's feedback</h3>
+          <ul id="emailSuggestions" class="suggestion-list" aria-live="polite">
+            <li>Your feedback will appear here.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card panel" style="margin-top:22px;">
+      <span class="output-label">Generated by Mr. Premium</span>
+      <pre id="emailOutput" class="output-pre" aria-live="polite" tabindex="0">Your formal email will appear here.</pre>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       CV
+       ========================================================= -->
+  <section id="cv" class="section" aria-label="CV Builder">
+    <button class="back-btn" onclick="showSection('home')" aria-label="Back to home">← Back</button>
+
+    <div class="section-heading">
+      <p class="eyebrow">CV Builder &amp; Analyser</p>
+      <h2 class="gradient-text">Create a realistic student CV.</h2>
+      <p class="lead">Build your CV step by step. Mr. Premium checks it with clear criteria and generates a clean draft.</p>
+    </div>
+
+    <div id="cvDraftBanner" class="draft-banner" role="status" aria-live="polite">✓ Draft saved locally</div>
+
+    <div class="tool-grid">
+      <form class="card panel" onsubmit="event.preventDefault(); analyzeCV();" aria-label="CV builder form">
+
+        <p class="form-section-title">1. Personal details</p>
+        <div class="two-col">
+          <div><label for="cvName">Full name</label><input id="cvName" type="text" placeholder="Alex Popescu" maxlength="80" autocomplete="name" aria-required="true"></div>
+          <div><label for="cvTarget">Target role / opportunity</label><input id="cvTarget" type="text" placeholder="Marketing internship" maxlength="120" aria-required="true"></div>
+        </div>
+        <div class="two-col">
+          <div><label for="cvEmail">Email</label><input id="cvEmail" type="email" placeholder="alex@email.com" maxlength="120" autocomplete="email" aria-required="true"></div>
+          <div><label for="cvPhone">Phone</label><input id="cvPhone" type="tel" placeholder="+40 7xx xxx xxx" maxlength="30" autocomplete="tel"></div>
+        </div>
+        <div class="two-col">
+          <div><label for="cvLocation">City / country</label><input id="cvLocation" type="text" placeholder="Bucharest, Romania" maxlength="80"></div>
+          <div><label for="cvLink">LinkedIn / portfolio / GitHub <span class="opt">(optional)</span></label><input id="cvLink" type="url" placeholder="https://..." maxlength="200"></div>
+        </div>
+
+        <p class="form-section-title">2. Profile</p>
+        <label for="cvGoal">Career goal</label>
+        <textarea id="cvGoal" rows="3" placeholder="What are you applying for and why?" maxlength="600" aria-required="true"></textarea>
+        <label for="cvStrengths">Main strengths</label>
+        <textarea id="cvStrengths" rows="2" placeholder="e.g. research, teamwork, public speaking, leadership" maxlength="400"></textarea>
+
+        <p class="form-section-title">3. Education</p>
+        <div class="two-col">
+          <div><label for="cvSchool">School / university</label><input id="cvSchool" type="text" placeholder="Colegiul Național..." maxlength="120" aria-required="true"></div>
+          <div><label for="cvProgram">Profile / degree</label><input id="cvProgram" type="text" placeholder="Mathematics-Informatics" maxlength="120"></div>
+        </div>
+        <div class="two-col">
+          <div><label for="cvEducationDates">Dates</label><input id="cvEducationDates" type="text" placeholder="2022 – present" maxlength="40"></div>
+          <div><label for="cvEducationDetails">Relevant achievements</label><input id="cvEducationDetails" type="text" placeholder="informatics, olympiads, debate" maxlength="300"></div>
+        </div>
+
+        <p class="form-section-title">4. Experience / activities</p>
+        <div class="exp-builder" role="group" aria-label="Add experience entry">
+          <div class="two-col">
+            <div><label for="cvExpRole">Role</label><input id="cvExpRole" type="text" placeholder="Marketing volunteer" maxlength="100"></div>
+            <div><label for="cvExpOrg">Organisation</label><input id="cvExpOrg" type="text" placeholder="Robotics team / NGO" maxlength="100"></div>
+          </div>
+          <label for="cvExpPeriod">Period</label>
+          <input id="cvExpPeriod" type="text" placeholder="2023 – present" maxlength="50">
+          <label for="cvExpActions">What did you do?</label>
+          <textarea id="cvExpActions" rows="2" placeholder="Use action verbs: organised, created, led, researched, presented…" maxlength="500"></textarea>
+          <label for="cvExpResult">Result / impact</label>
+          <textarea id="cvExpResult" rows="2" placeholder="e.g. attracted 3 sponsors, organised event for 120 students" maxlength="400"></textarea>
+          <button type="button" class="btn btn-secondary" onclick="addExperience()" style="margin-bottom:8px;">+ Add experience</button>
+          <ul id="cvExperienceItems" class="exp-added" aria-label="Added experiences" aria-live="polite"></ul>
+        </div>
+
+        <p class="form-section-title">5. Skills &amp; languages</p>
+        <label for="cvTechnicalSkills">Technical skills</label>
+        <textarea id="cvTechnicalSkills" rows="2" placeholder="HTML, CSS, JavaScript, Excel, Canva, research" maxlength="400"></textarea>
+        <label for="cvSoftSkills">Soft skills</label>
+        <textarea id="cvSoftSkills" rows="2" placeholder="communication, teamwork, leadership, time management" maxlength="400"></textarea>
+        <label for="cvLanguages">Languages</label>
+        <input id="cvLanguages" type="text" placeholder="Romanian native, English B2, German B1" maxlength="200">
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="submit">Analyse &amp; generate CV</button>
+          <button class="btn btn-secondary" type="button" onclick="clearCVForm()">Clear</button>
+          <button class="btn btn-secondary" type="button" onclick="copyText('cvPreview', this)">Copy CV</button>
+        </div>
+      </form>
+
+      <div class="results-col">
+        <div class="card panel" style="text-align:center;" aria-live="polite">
+          <div class="score-circle" id="cvScoreCircle" role="img" aria-label="CV quality score">
+            <span id="cvScore">0</span>%
+          </div>
+          <h3>CV quality score</h3>
+          <p id="cvAdvice" style="color:var(--muted);font-size:14px;margin-top:8px;">Complete the form and press Analyse.</p>
+        </div>
+
+        <div class="card panel">
+          <h3>Criteria breakdown</h3>
+          <ul id="cvCriteria" class="suggestion-list" aria-live="polite"><li>Analysis will appear here.</li></ul>
+        </div>
+
+        <div class="card panel">
+          <h3>Specific improvements</h3>
+          <ul id="cvSuggestions" class="suggestion-list" aria-live="polite"><li>Feedback will appear here.</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card panel" style="margin-top:22px;">
+      <span class="output-label">Generated by Mr. Premium</span>
+      <pre id="cvPreview" class="output-pre" aria-live="polite" tabindex="0">Your generated CV will appear here.</pre>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       PUBLIC SPEAKING
+       ========================================================= -->
+  <section id="speaking" class="section" aria-label="Public Speaking Trainer">
+    <button class="back-btn" onclick="showSection('home')" aria-label="Back to home">← Back</button>
+
+    <div class="section-heading">
+      <p class="eyebrow">Public Speaking Trainer</p>
+      <h2 class="gradient-text">Practice with a timer and speech hints.</h2>
+      <p class="lead">Use the 2-minute timer, get quick tips, and reveal the speech structure step by step.</p>
+    </div>
+
+    <div class="two-panel-grid">
+      <div class="card panel">
+        <h3>Quick speaking tips</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Press the button for a random tip from Mr. Premium.</p>
+        <button class="btn btn-primary" type="button" onclick="showRandomTip('speakingTips', 'speakingTipOutput')" aria-label="Get random speaking tip">Random tip</button>
+        <div class="tip-box" id="speakingTipOutput" role="status" aria-live="polite">Press the button to receive a speaking tip.</div>
+      </div>
+
+      <div class="card panel">
+        <h3>Practice timer</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:4px;">Use this 2-minute timer to rehearse your speech.</p>
+        <div class="timer" id="timer" role="timer" aria-live="off" aria-label="Countdown timer">02:00</div>
+        <div class="btn-row">
+          <button id="startTimerBtn"  class="btn btn-primary"   onclick="startTimer()"   aria-label="Start timer">Start</button>
+          <button id="pauseResumeBtn" class="btn btn-secondary" onclick="togglePause()"  disabled aria-label="Pause or resume timer">Pause</button>
+          <button id="resetTimerBtn"  class="btn btn-secondary" onclick="resetTimer()"   disabled aria-label="Reset timer">Reset</button>
+        </div>
+
+        <hr class="divider">
+
+        <h3>Speech structure hints</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Reveal the parts one by one.</p>
+        <div class="btn-row">
+          <button id="nextHintBtn" class="btn btn-secondary" onclick="showNextHint('speechHints','speechHintOutput','nextHintBtn')" aria-label="Reveal next speech hint">Hint</button>
+          <button class="btn btn-secondary" onclick="resetHints('speechHintOutput','nextHintBtn','Press Hint to reveal Part 1: Introduction.')" aria-label="Reset speech hints">Reset hints</button>
+        </div>
+        <div class="tip-box" id="speechHintOutput" role="status" aria-live="polite">Press Hint to reveal Part 1: Introduction.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       INTERVIEW
+       ========================================================= -->
+  <section id="interview" class="section" aria-label="Interview Coach">
+    <button class="back-btn" onclick="showSection('home')" aria-label="Back to home">← Back</button>
+
+    <div class="section-heading">
+      <p class="eyebrow">Interview Coach</p>
+      <h2 class="gradient-text">Practice with tips and answer hints.</h2>
+      <p class="lead">Use quick interview tips and reveal the structure of a strong answer step by step.</p>
+    </div>
+
+    <div class="two-panel-grid">
+      <div class="card panel">
+        <h3>Quick interview tips</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Press the button for a random tip from Mr. Premium.</p>
+        <button class="btn btn-primary" type="button" onclick="showRandomTip('interviewTips','interviewTipOutput')" aria-label="Get random interview tip">Random tip</button>
+        <div class="tip-box" id="interviewTipOutput" role="status" aria-live="polite">Press the button to receive an interview tip.</div>
+      </div>
+
+      <div class="card panel">
+        <h3>Answer structure hints</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Reveal the parts of a strong answer one by one.</p>
+        <div class="btn-row">
+          <button id="nextInterviewHintBtn" class="btn btn-secondary" onclick="showNextHint('interviewHints','interviewHintOutput','nextInterviewHintBtn')" aria-label="Reveal next interview hint">Hint</button>
+          <button class="btn btn-secondary" onclick="resetHints('interviewHintOutput','nextInterviewHintBtn','Press Hint to reveal Part 1: Understand the question.')" aria-label="Reset interview hints">Reset hints</button>
+        </div>
+        <div class="tip-box" id="interviewHintOutput" role="status" aria-live="polite">Press Hint to reveal Part 1: Understand the question.</div>
+
+        <hr class="divider">
+
+        <h3>Common interview question</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:14px;">Generate a question and try to answer using the hints above.</p>
+        <button class="btn btn-primary" onclick="showRandomQuestion()" aria-label="Generate new interview question">New question</button>
+        <div class="tip-box big-question" id="interviewPracticeQuestion" role="status" aria-live="polite">Press New question to start practising.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       EXTRACURRICULAR
+       ========================================================= -->
+  <section id="extracurricular" class="section" aria-label="Extracurricular Activities">
+    <button class="back-btn" onclick="showSection('home')" aria-label="Back to home">← Back</button>
+
+    <div class="section-heading">
+      <p class="eyebrow">Extracurricular Activities</p>
+      <h2 class="gradient-text">Build skills outside the classroom.</h2>
+      <p class="lead">This section covers activities that help students grow through leadership, research, debate, and real-world communication.</p>
+    </div>
+
+    <div class="card panel">
+      <h3 class="gradient-text mun-heading">Model United Nations</h3>
+      <p class="lead" style="max-width:900px; text-align: justify;">
+        Model United Nations (MUN) is an academic simulation where students represent countries,
+        debate global problems, and write diplomatic documents. It combines public speaking,
+        research, negotiation, teamwork, and formal writing in one activity.
+      </p>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <h4>What you do in MUN</h4>
+          <ul class="clean-list">
+            <li>Represent a country or a delegation.</li>
+            <li>Research a topic from that country's perspective.</li>
+            <li>Write a position paper before the conference.</li>
+            <li>Debate, negotiate, and form alliances during committee.</li>
+            <li>Write and support resolutions that propose solutions.</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>Why it helps self-development</h4>
+          <ul class="clean-list">
+            <li>Improves confidence in public speaking.</li>
+            <li>Builds research and critical thinking skills.</li>
+            <li>Teaches diplomatic language and formal communication.</li>
+            <li>Develops leadership, teamwork, and negotiation.</li>
+            <li>Helps students understand international relations.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-card" style="margin-top:16px;">
+        <h4>Basic MUN procedure</h4>
+        <p class="procedure-text" style="text-align: justify;">
+          In a typical committee, delegates present their country's stance through speeches.
+          They then debate, ask questions, negotiate in moderated and unmoderated caucuses, and
+          write draft resolutions. At the end, delegates vote on the resolutions. The goal is not
+          only to enhance public speaking skills, but also to cooperate and create realistic solutions.
+        </p>
+      </div>
+
+      <div class="example-box">
+        <h4>Position paper example</h4>
+        <pre>Committee: Social, Humanitarian and Cultural Committee (SOCHUM)
+Country: Arab Republic of Egypt
+Agenda: Safeguarding Cultural Heritage in Conflict Zones
+
+Safeguarding Cultural Heritage in Conflict Zones
+
+In a period when radical militaristic actions are still being carried out, protecting a
+nation's patrimonium may require significant effort, which can sometimes be unfeasible
+if undertaken by a single state. Cultural heritage represents a pillar of a country's
+history, serving as direct proof of the past and of the enigmas it has left to be deciphered.
+
+The Arab Republic of Egypt is deeply aware of the importance of safeguarding its cultural
+heritage despite the obstacles imposed by conflict and instability. Measures have been taken
+to protect cultural heritage in several fields, including, but not limited to, the social and
+legal spheres. Nevertheless, the challenges remain particularly difficult when cultural
+genocide occurs. Cultural diplomacy is therefore of utmost importance in preventing unwanted
+events, such as the looting that took place in Cairo in 2011.
+
+Among the many examples of efforts to address this issue, Egypt has adopted various laws,
+including Law No. 117 of 1983 and Law No. 144 of 2006, both of which support the preservation
+of cultural heritage. Conflict zones make the situation even more challenging, especially when
+terrorist organizations are also involved.
+
+Thus, the Arab Republic of Egypt considers that one of the most effective ways to address the
+obstacles threatening cultural heritage is to collaborate with INTERPOL, strengthen
+international cooperation and promote the digitalization of endangered cultural elements.</pre>
+      </div>
+
+      <div class="example-box">
+        <h4>Resolution example</h4>
+        <pre>FORUM: Third Committee
+QUESTION OF: Safeguarding Cultural Heritage in Conflict Zones
+SPONSOR: United Kingdom of Great Britain and Northern Ireland
+CO-SPONSORS: Canada, Arab Republic of Egypt, French Republic, Republic of India,
+State of Israel, United Mexican States, Kingdom of the Netherlands, Kingdom of Sweden,
+Republic of Türkiye, Ukraine, United Republic of Tanzania, United States of America,
+Human Rights Watch
+
+THE THIRD COMMITTEE,
+
+Fully aware of the 1954 Hague Convention for the Protection of Cultural Property in
+the Event of Armed Conflict,
+
+Taking into account the UNESCO convention concerning the intentional destruction of
+cultural heritage sites,
+
+Keeping in mind the Hague Convention of 1899 and 1907,
+
+Recognizing the threats imposed by globalization upon all forms of cultural heritage,
+
+Conscious of accidental destruction of cultural heritage through military operations,
+especially clandestine military operations,
+
+1. Encourages the creation of specialized groups, in collaboration with INTERPOL, that
+   would consist of trained experts who would act to protect vulnerable cultural sites:
+   a) facilitating safe transportation of artefacts, considering:
+      i. the area of the armed conflict,
+      ii. the infrastructure,
+   b) protecting heritage from terrorist groups,
+   c) holding periodic training sessions, conducted quarterly;
+
+2. Strongly emphasizes the importance of taking legal actions against illicit trade of
+   artefacts with cultural importance, by:
+   a) increasing monitoring of international export and trade at the borders,
+   b) implementing fines for any kind of illegal possession of cultural heritage;
+
+3. Draws attention to the creation of awareness campaigns focused on engaging communities:
+   a) creating online campaigns,
+   b) creating projects in schools,
+   c) organising trips to war-free cultural sites,
+   d) spreading informational materials;
+
+4. Further recommends strengthening international cooperation between Member States,
+   cultural institutions and relevant organisations in order to improve the protection,
+   identification and recovery of endangered cultural heritage in conflict zones.</pre>
+        <p class="example-box-footer">
+          A resolution represents the committee's proposed solution to the topic. It helps delegates
+          practise problem-solving, legal-style writing, teamwork, and persuasive negotiation, because
+          the document must convince others to support it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Mr. Premium — Student Assistant Expert &nbsp;·&nbsp;<span id="currentYear"></span></p>
+</footer>
+
+<script>
+"use strict";
+
+/* =============================================================
+   UTILITY
+   ============================================================= */
+const $ = id => document.getElementById(id);
+
+/** Strip HTML tags and trim — prevents XSS in DOM text nodes */
+function sanitize(value) {
+  return String(value || '').replace(/<[^>]*>/g, '').trim();
+}
+
+function wordCount(text) {
+  return String(text || '').split(/\s+/).filter(Boolean).length;
+}
+
+function hasNumber(text) { return /\d/.test(text); }
+
+function hasEmail(text) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text); }
+
+function isGarbage(text) {
+  const s = String(text || '').toLowerCase().replace(/\s+/g, '');
+  if (!s || !/[a-z]/i.test(s)) return true;
+  if (/^(.)\1{4,}$/.test(s)) return true;
+  if (s.length <= 4 && /^[a-z]+$/.test(s)) return true;
+  const letters = s.replace(/[^a-z]/g, '');
+  return letters.length >= 6 && new Set(letters).size <= 2;
+}
+
+function isMeaningful(text, minWords = 2, minLetters = 5) {
+  if (!text || isGarbage(text)) return false;
+  return text.replace(/[^a-zA-Z]/g, '').length >= minLetters && wordCount(text) >= minWords;
+}
+
+function countItems(text) {
+  return String(text || '').split(/[,;\n]/).map(s => s.trim()).filter(s => isMeaningful(s, 1, 2)).length;
+}
+
+function hasActionVerb(text) {
+  return /\b(organized|organised|created|led|managed|coordinated|researched|designed|developed|built|presented|improved|supported|wrote|planned|negotiated|analyzed|analysed|volunteered|participated)\b/i.test(text);
+}
+
+function copyText(elId, btn) {
+  const el = $(elId);
+  if (!el) return;
+  navigator.clipboard.writeText(el.value || el.textContent || '').then(() => {
+    if (btn) { const orig = btn.textContent; btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = orig, 1800); }
+  });
+}
+
+function setScore(circleId, scoreId, pct) {
+  const deg = Math.round(Math.min(100, Math.max(0, pct)) * 3.6);
+  $(circleId).style.background = `conic-gradient(var(--gold) ${deg}deg, rgba(255,255,255,0.10) 0deg)`;
+  $(scoreId).textContent = Math.round(pct);
+}
+
+function addLi(listId, text, cls) {
+  const li = document.createElement('li');
+  li.textContent = text;
+  if (cls) li.className = cls;
+  $(listId).appendChild(li);
+}
+
+/* =============================================================
+   NAVIGATION
+   ============================================================= */
+const sections = document.querySelectorAll('.section');
+const navBtns  = document.querySelectorAll('.nav-btn');
+const menuBtn  = $('menuBtn');
+const navMenu  = $('navMenu');
+
+function showSection(id) {
+  sections.forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  navMenu.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded', 'false');
+  navBtns.forEach(b => b.classList.toggle('active', b.dataset.section === id));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+menuBtn.addEventListener('click', () => {
+  const open = navMenu.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded', String(open));
+});
+
+document.addEventListener('click', e => {
+  if (!menuBtn.contains(e.target) && !navMenu.contains(e.target)) {
+    navMenu.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    navMenu.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+/* =============================================================
+   DRAFT AUTOSAVE (localStorage)
+   PDF Ch.II: "stocarea și utilizarea corectă a resurselor … localStorage"
+   ============================================================= */
+const EMAIL_FIELDS = ['emailSender','emailTo','emailSubject','emailContext','emailRequest','emailDeadline'];
+const CV_FIELDS    = ['cvName','cvTarget','cvEmail','cvPhone','cvLocation','cvLink','cvGoal','cvStrengths',
+                      'cvSchool','cvProgram','cvEducationDates','cvEducationDetails',
+                      'cvTechnicalSkills','cvSoftSkills','cvLanguages'];
+
+function saveDraft(key, fields, bannerId) {
+  try {
+    const data = {};
+    fields.forEach(id => { const el = $(id); if (el) data[id] = sanitize(el.value); });
+    localStorage.setItem(key, JSON.stringify(data));
+    const b = $(bannerId);
+    if (b) { b.classList.add('visible'); setTimeout(() => b.classList.remove('visible'), 2000); }
+  } catch (_) { /* localStorage unavailable — fail silently */ }
+}
+
+function loadDraft(key, fields) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    fields.forEach(id => { const el = $(id); if (el && data[id]) el.value = data[id]; });
+  } catch (_) {}
+}
+
+function setupAutosave() {
+  function debounced(fn, delay) {
+    let t; return () => { clearTimeout(t); t = setTimeout(fn, delay); };
+  }
+  const saveEmail = debounced(() => saveDraft('mp_email_draft', EMAIL_FIELDS, 'emailDraftBanner'), 1200);
+  const saveCV    = debounced(() => saveDraft('mp_cv_draft',    CV_FIELDS,    'cvDraftBanner'),    1200);
+
+  EMAIL_FIELDS.forEach(id => { const el = $(id); if (el) el.addEventListener('input', saveEmail); });
+  CV_FIELDS.forEach(   id => { const el = $(id); if (el) el.addEventListener('input', saveCV);    });
+
+  loadDraft('mp_email_draft', EMAIL_FIELDS);
+  loadDraft('mp_cv_draft',    CV_FIELDS);
+}
+
+/* =============================================================
+   EMAIL MODULE
+   ============================================================= */
+function analyzeEmail() {
+  const d = {
+    sender:    sanitize($('emailSender').value),
+    recipient: sanitize($('emailTo').value),
+    purpose:   $('emailPurpose').value,
+    tone:      $('emailTone').value,
+    subject:   sanitize($('emailSubject').value),
+    context:   sanitize($('emailContext').value),
+    request:   sanitize($('emailRequest').value),
+    deadline:  sanitize($('emailDeadline').value)
+  };
+
+  $('emailSuggestions').innerHTML = '';
+
+  if (!d.sender && !d.recipient && !d.subject && !d.context && !d.request) {
+    setScore('emailScoreCircle', 'emailScore', 0);
+    $('emailAdvice').textContent = 'Add information before generating.';
+    $('emailSuggestions').innerHTML = '<li class="sug-bad">Nothing completed yet. Add at least recipient, subject, context and request.</li>';
+    $('emailOutput').textContent = 'Your formal email will appear here.';
+    return;
+  }
+
+  let score = 0;
+
+  if (d.sender)   { score += 8; } else addLi('emailSuggestions', 'Add your name so the closing is complete.', 'sug-warn');
+  if (d.recipient){ score += 10;} else addLi('emailSuggestions', 'Add a clear recipient.', 'sug-warn');
+
+  if (d.subject && wordCount(d.subject) >= 3) { score += 12; }
+  else addLi('emailSuggestions', 'Write a specific subject — avoid vague ones like "Question".', 'sug-bad');
+
+  if (wordCount(d.context) >= 18) { score += 18; }
+  else if (d.context) { score += 9; addLi('emailSuggestions', 'Add more context so the recipient understands quickly.', 'sug-warn'); }
+  else addLi('emailSuggestions', 'Add context — explain the situation in 2–3 sentences.', 'sug-bad');
+
+  if (wordCount(d.request) >= 12) { score += 22; }
+  else if (d.request) { score += 10; addLi('emailSuggestions', 'Make the request more precise — say exactly what you need.', 'sug-warn'); }
+  else addLi('emailSuggestions', 'Add your main request — a formal email must clearly state what you need.', 'sug-bad');
+
+  if (d.deadline) { score += 8; } else addLi('emailSuggestions', 'Add a deadline or preferred time if relevant.', 'sug-warn');
+
+  if (d.context && d.request && d.recipient && d.subject) score += 12;
+  if ((d.context + d.request).length > 900) { score -= 8; addLi('emailSuggestions', 'The email may be too long — keep it concise.', 'sug-warn'); }
+  if (/!/.test(d.context + d.request))       { score -= 5; addLi('emailSuggestions', 'Avoid exclamation marks in formal emails.', 'sug-warn'); }
+
+  score = Math.round(Math.max(0, Math.min(100, score)));
+  setScore('emailScoreCircle', 'emailScore', score);
+
+  $('emailAdvice').textContent =
+    score < 45 ? 'Needs more structure. Add a subject, context and a clear request.' :
+    score < 75 ? 'Good start. Improve clarity and add any missing details.' :
+                 'Strong email. Check spelling and do a final read before sending.';
+
+  if (!$('emailSuggestions').children.length)
+    addLi('emailSuggestions', 'Excellent structure — clear subject, polite tone, context and request all included.', 'sug-good');
+
+  $('emailOutput').textContent = buildEmail(d);
+}
+
+function buildEmail(d) {
+  const recipient = d.recipient || 'Sir/Madam';
+  const sender    = d.sender   || '[Your Name]';
+  const subject   = d.subject  || getDefaultSubject(d.purpose);
+  const context   = d.context  || '[Add context here.]';
+  const request   = d.request  || '[Add your request here.]';
+
+  const tones = {
+    formal:  ['I hope this message finds you well.', 'I would be grateful if you could', 'Thank you for your time and consideration.', 'Kind regards,'],
+    warm:    ['I hope you are doing well.',           'I would really appreciate it if you could', 'Thank you very much for your help.', 'Best regards,'],
+    concise: ['I am writing regarding the matter below.', 'Please', 'Thank you.', 'Regards,']
+  };
+  const t = tones[d.tone] || tones.formal;
+
+  const purposes = {
+    'ask for information':      ['ask for information regarding',       'clarify',                     'This information would help me prepare properly.'],
+    'request a meeting':        ['request a meeting regarding',         'discuss',                     'A short meeting would help me understand the next steps.'],
+    'send an assignment':       ['send my assignment regarding',        'review',                      'Please let me know if additional information is needed.'],
+    'apply for an opportunity': ['apply for the opportunity related to','consider my application because','I would be glad to provide any extra details.'],
+    'apologise for a delay':    ['apologise for the delay regarding',   'understand that',             'I apologise for any inconvenience caused.'],
+    'follow up politely':       ['politely follow up on',               'share updates about',         'This would help me plan my next steps.']
+  };
+  const [action, verb, extra] = purposes[d.purpose] || ['write regarding', 'help with', ''];
+  const deadline = d.deadline ? `\n\nIf possible, I would appreciate a response ${d.deadline}.` : '';
+
+  return `Subject: ${subject}\n\nDear ${recipient},\n\n${t[0]}\n\nI am writing to ${action} ${context}\n\n${t[1]} ${verb} ${request}? ${extra}${deadline}\n\n${t[2]}\n\n${t[3]}\n${sender}`;
+}
+
+function getDefaultSubject(purpose) {
+  const map = {
+    'ask for information':      'Request for information',
+    'request a meeting':        'Meeting request',
+    'send an assignment':       'Assignment submission',
+    'apply for an opportunity': 'Application for opportunity',
+    'apologise for a delay':    'Apology for delay',
+    'follow up politely':       'Follow-up on previous message'
+  };
+  return map[purpose] || (purpose.charAt(0).toUpperCase() + purpose.slice(1));
+}
+
+function clearEmailForm() {
+  EMAIL_FIELDS.forEach(id => { const el = $(id); if (el) el.value = ''; });
+  $('emailPurpose').value = 'ask for information';
+  $('emailTone').value    = 'formal';
+  setScore('emailScoreCircle', 'emailScore', 0);
+  $('emailAdvice').textContent = 'Complete the form and press Generate & check.';
+  $('emailSuggestions').innerHTML = '<li>Your feedback will appear here.</li>';
+  $('emailOutput').textContent = 'Your formal email will appear here.';
+  try { localStorage.removeItem('mp_email_draft'); } catch (_) {}
+}
+
+/* =============================================================
+   CV MODULE
+   ============================================================= */
+let cvExperiences = [];
+
+/** Add a new experience entry from the builder fields */
+function addExperience() {
+  const role    = sanitize($('cvExpRole').value);
+  const org     = sanitize($('cvExpOrg').value);
+  const period  = sanitize($('cvExpPeriod').value);
+  const actions = sanitize($('cvExpActions').value);
+  const result  = sanitize($('cvExpResult').value);
+
+  if (!isMeaningful(role, 1, 3) || !isMeaningful(org, 1, 3) || !isMeaningful(actions, 4, 14)) {
+    alert('Please fill in Role, Organisation and at least a brief description of what you did.');
+    return;
+  }
+
+  cvExperiences.push({ role, organization: org, period, actions, result });
+  renderExpList();
+
+  /* Clear builder fields after adding */
+  ['cvExpRole','cvExpOrg','cvExpPeriod','cvExpActions','cvExpResult'].forEach(id => { const el = $(id); if (el) el.value = ''; });
+}
+
+function renderExpList() {
+  const list = $('cvExperienceItems');
+  list.innerHTML = '';
+  cvExperiences.forEach((item, i) => {
+    const li = document.createElement('li');
+    li.textContent = `${item.role} at ${item.organization}${item.period ? ' (' + item.period + ')' : ''}`;
+    li.title = 'Click to remove';
+    li.setAttribute('role', 'button');
+    li.setAttribute('tabindex', '0');
+    li.addEventListener('click',   () => removeExp(i));
+    li.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') removeExp(i); });
+    list.appendChild(li);
+  });
+}
+
+function removeExp(i) { cvExperiences.splice(i, 1); renderExpList(); }
+
+function analyzeCV() {
+  const d = {
+    name:             sanitize($('cvName').value),
+    target:           sanitize($('cvTarget').value),
+    email:            sanitize($('cvEmail').value),
+    phone:            sanitize($('cvPhone').value),
+    location:         sanitize($('cvLocation').value),
+    link:             sanitize($('cvLink').value),
+    goal:             sanitize($('cvGoal').value),
+    strengths:        sanitize($('cvStrengths').value),
+    school:           sanitize($('cvSchool').value),
+    program:          sanitize($('cvProgram').value),
+    educationDates:   sanitize($('cvEducationDates').value),
+    educationDetails: sanitize($('cvEducationDetails').value),
+    technicalSkills:  sanitize($('cvTechnicalSkills').value),
+    softSkills:       sanitize($('cvSoftSkills').value),
+    languages:        sanitize($('cvLanguages').value),
+    experiences:      cvExperiences
+  };
+
+  $('cvSuggestions').innerHTML = '';
+  $('cvCriteria').innerHTML    = '';
+
+  const hasInput = Object.values(d).filter(v => !Array.isArray(v)).some(Boolean) || d.experiences.length;
+  if (!hasInput) {
+    setScore('cvScoreCircle', 'cvScore', 0);
+    $('cvAdvice').textContent = 'Add real CV information before analysing.';
+    $('cvCriteria').innerHTML    = '<li class="crit-fail">No criteria could be evaluated.</li>';
+    $('cvSuggestions').innerHTML = '<li class="sug-bad">Nothing completed yet.</li>';
+    $('cvPreview').textContent   = 'Your generated CV will appear here.';
+    return;
+  }
+
+  function criterion(label, pts, max) {
+    addLi('cvCriteria', `${label}: ${pts}/${max} pts`,
+      pts >= max * .75 ? 'crit-pass' : pts > 0 ? 'crit-mid' : 'crit-fail');
+  }
+
+  let score = 0, pts;
+
+  /* Personal details (15 pts) */
+  pts = 0;
+  if (isMeaningful(d.name, 2, 5) && !hasNumber(d.name)) pts += 4; else addLi('cvSuggestions', 'Use a real full name — no numbers.', 'sug-bad');
+  if (isMeaningful(d.target, 2, 8)) pts += 4; else addLi('cvSuggestions', 'Add a clear target role or opportunity.', 'sug-warn');
+  if (hasEmail(d.email)) pts += 4; else addLi('cvSuggestions', 'Add a valid email address.', 'sug-bad');
+  if (d.phone && hasNumber(d.phone)) pts += 2; else addLi('cvSuggestions', 'Add a phone number.', 'sug-warn');
+  if (isMeaningful(d.location, 1, 4) || d.link.length > 8) pts += 1;
+  score += pts; criterion('Personal details', pts, 15);
+
+  /* Profile relevance (15 pts) */
+  pts = 0;
+  if (isMeaningful(d.goal, 10, 35)) pts += 7; else addLi('cvSuggestions', 'Write a real career goal of at least 10 words.', 'sug-warn');
+  if (countItems(d.strengths) >= 3) pts += 5; else addLi('cvSuggestions', 'Add at least 3 relevant strengths.', 'sug-warn');
+  if (d.target && d.goal.toLowerCase().includes(d.target.split(' ')[0].toLowerCase())) pts += 3;
+  score += pts; criterion('Profile relevance', pts, 15);
+
+  /* Education (15 pts) */
+  pts = 0;
+  if (isMeaningful(d.school, 2, 6)) pts += 4; else addLi('cvSuggestions', 'Add a real school or university name.', 'sug-bad');
+  if (isMeaningful(d.program, 2, 6)) pts += 4; else addLi('cvSuggestions', 'Add your profile, degree or specialisation.', 'sug-warn');
+  if (hasNumber(d.educationDates) || /present|current/i.test(d.educationDates)) pts += 3; else addLi('cvSuggestions', 'Add education dates, e.g. 2022–present.', 'sug-warn');
+  if (isMeaningful(d.educationDetails, 3, 12)) pts += 4; else addLi('cvSuggestions', 'Add relevant subjects or achievements.', 'sug-warn');
+  score += pts; criterion('Education', pts, 15);
+
+  /* Experience & activities (25 pts) */
+  pts = 0;
+  if (d.experiences.length > 0) pts += 10; else addLi('cvSuggestions', 'Add at least one experience, volunteering or club role.', 'sug-bad');
+  if (d.experiences.some(e => hasActionVerb(e.actions))) pts += 6; else if (d.experiences.length) addLi('cvSuggestions', 'Use stronger action verbs in experience.', 'sug-warn');
+  if (d.experiences.some(e => hasNumber(e.result) || isMeaningful(e.result, 6, 18))) pts += 6; else if (d.experiences.length) addLi('cvSuggestions', 'Add results with numbers if possible.', 'sug-warn');
+  if (d.experiences.length >= 2) pts += 3;
+  score += pts; criterion('Experience & activities', pts, 25);
+
+  /* Skills (15 pts) */
+  pts = 0;
+  const techCount = countItems(d.technicalSkills);
+  const softCount = countItems(d.softSkills);
+  if (techCount >= 3) pts += 7; else addLi('cvSuggestions', 'Add at least 3 technical skills.', 'sug-warn');
+  if (softCount >= 3) pts += 5; else addLi('cvSuggestions', 'Add at least 3 soft skills.', 'sug-warn');
+  if (techCount + softCount >= 8) pts += 3;
+  score += pts; criterion('Skills', pts, 15);
+
+  /* Languages & formatting (15 pts) */
+  pts = 0;
+  if (countItems(d.languages) >= 2 || /\b(native|b1|b2|c1|c2|a1|a2)\b/i.test(d.languages)) pts += 6; else addLi('cvSuggestions', 'Add languages with levels, e.g. English B2.', 'sug-warn');
+  if (score >= 45) pts += 5;
+  if (d.experiences.length <= 5 && score >= 45) pts += 4;
+  else if (d.experiences.length > 5) addLi('cvSuggestions', 'Keep only the most relevant experiences for a one-page CV.', 'sug-warn');
+  score += pts; criterion('Languages & formatting', pts, 15);
+
+  score = Math.round(Math.max(0, Math.min(100, score)));
+  setScore('cvScoreCircle', 'cvScore', score);
+
+  $('cvAdvice').textContent =
+    score < 40 ? 'Not ready yet — needs real information in all sections.' :
+    score < 70 ? 'Good base. Add stronger results and clearer impact.' :
+                 'Strong student CV. Polish the wording and tailor it to the opportunity.';
+
+  if (!$('cvSuggestions').children.length)
+    addLi('cvSuggestions', 'Great structure. Check grammar, spacing and relevance of every bullet.', 'sug-good');
+
+  $('cvPreview').textContent = buildCV(d);
+}
+
+function buildCV(d) {
+  const contact  = [d.email, d.phone, d.location, d.link].filter(Boolean).join(' | ');
+  const profile  = d.goal && d.strengths
+    ? `${d.goal}\nKey strengths: ${d.strengths}.`
+    : d.goal || '[Write a focused 2–3 line profile.]';
+  const expText  = d.experiences.length
+    ? d.experiences.map(e =>
+        `${e.role} — ${e.organization}${e.period ? ' | ' + e.period : ''}\n- ${e.actions}${e.result ? '\n  Impact: ' + e.result : ''}`
+      ).join('\n\n')
+    : '[Add experience, volunteering, club activity or responsibility.]';
+
+  return `${d.name || '[Full Name]'}
+${d.target || '[Target role / opportunity]'}
+${contact  || '[Email | Phone | Location]'}
+
+PROFILE
+${profile}
+
+EDUCATION
+${d.school || '[School / University]'}${d.program ? ' — ' + d.program : ''}
+${d.educationDates || '[Dates]'}
+${d.educationDetails ? '- ' + d.educationDetails : '- [Add relevant subjects or achievements.]'}
+
+EXPERIENCE / ACTIVITIES
+${expText}
+
+SKILLS
+Technical: ${d.technicalSkills || '[Technical skills]'}
+Soft skills: ${d.softSkills    || '[Soft skills]'}
+
+LANGUAGES
+${d.languages || '[Languages and levels]'}`;
+}
+
+function clearCVForm() {
+  [...CV_FIELDS, 'cvExpRole','cvExpOrg','cvExpPeriod','cvExpActions','cvExpResult'].forEach(id => {
+    const el = $(id); if (el) el.value = '';
+  });
+  cvExperiences = [];
+  renderExpList();
+  setScore('cvScoreCircle', 'cvScore', 0);
+  $('cvAdvice').textContent    = 'Complete the form and press Analyse.';
+  $('cvCriteria').innerHTML    = '<li>Analysis will appear here.</li>';
+  $('cvSuggestions').innerHTML = '<li>Feedback will appear here.</li>';
+  $('cvPreview').textContent   = 'Your generated CV will appear here.';
+  try { localStorage.removeItem('mp_cv_draft'); } catch (_) {}
+}
+
+/* =============================================================
+   TIPS, HINTS & RANDOM QUESTIONS (shared)
+   ============================================================= */
+const speakingTips = [
+  'Start with a clear opening sentence — not an apology.',
+  'Do not read every word. Use keywords and speak naturally.',
+  'Pause after important ideas. Silence signals confidence.',
+  'Look at different parts of the audience, not just one person.',
+  'Keep your hands relaxed and use small gestures to support your ideas.',
+  'End with one strong final sentence, then stop.',
+  'Speak slightly slower than in normal conversation.',
+  'If you forget a sentence, return to your main idea and continue calmly.'
+];
+
+const interviewTips = [
+  'Answer the question directly before adding details.',
+  'Use one concrete example instead of speaking generally.',
+  'Do not memorise a full script — memorise the structure.',
+  'Mention what you personally did, not just what the team did.',
+  'End with a result, lesson or reason why the experience matters.',
+  'A good answer is usually under two minutes.',
+  'If you need a moment, pause and organise your thought.',
+  'Use a calm voice and avoid rushing through key points.'
+];
+
+const speechHints = [
+  { title: 'Part 1: Introduction',       text: 'Open with a hook, introduce the topic, and state your main message. The audience should understand immediately what you will talk about.' },
+  { title: 'Part 2: Main idea',          text: 'Explain your central message in simple words. One clear message is stronger than five unclear ones.' },
+  { title: 'Part 3: Supporting points',  text: 'Give 2–3 reasons that support your main idea. Each point should be short, logical and easy to remember.' },
+  { title: 'Part 4: Example or proof',   text: 'Add one example, fact, personal story or result to make your speech more convincing and less abstract.' },
+  { title: 'Part 5: Conclusion',         text: 'Return to your main message and end with a confident final sentence. Do not end suddenly or with "that is all".' },
+  { title: 'Part 6: Delivery',           text: 'Practise voice, pauses, eye contact and posture. A good speech must be delivered clearly, not just written well.' }
+];
+
+const interviewHints = [
+  { title: 'Part 1: Understand the question', text: 'Identify what the interviewer is really asking: motivation, teamwork, problem-solving or self-awareness.' },
+  { title: 'Part 2: Give short context',       text: 'Start with one short sentence explaining the situation. Do not spend too much time on background.' },
+  { title: 'Part 3: Explain your action',      text: 'Say clearly what you personally did. Use action verbs: organised, led, solved, improved, researched, presented.' },
+  { title: 'Part 4: Add result or impact',     text: 'Mention what changed because of your action. Use a number, result, feedback or visible improvement if possible.' },
+  { title: 'Part 5: Add a lesson',             text: 'Finish with what you learned and how it makes you better prepared for the opportunity.' },
+  { title: 'Part 6: Delivery',                 text: 'Speak calmly, keep eye contact and avoid sounding robotic. A natural answer is stronger than a memorised paragraph.' }
+];
+
+const interviewQuestions = [
+  'Tell me about yourself.',
+  'Why are you interested in this opportunity?',
+  'Describe a time when you worked in a team.',
+  'Tell me about a challenge you overcame.',
+  'What is one strength that makes you a good candidate?',
+  'Describe a mistake you made and what you learned.',
+  'Tell me about a project or activity you are proud of.',
+  'How do you handle feedback?'
+];
+
+/* hint state: outputId → current index */
+const hintState = {};
+
+function showRandomTip(arrayName, outputId) {
+  const arr = { speakingTips, interviewTips }[arrayName];
+  const el  = $(outputId);
+  if (!arr || !el) return;
+  el.textContent = arr[Math.floor(Math.random() * arr.length)];
+}
+
+function showNextHint(arrayName, outputId, btnId) {
+  const arr = { speechHints, interviewHints }[arrayName];
+  const el  = $(outputId);
+  const btn = $(btnId);
+  if (!arr || !el) return;
+
+  if (!(outputId in hintState)) hintState[outputId] = 0;
+  const idx = hintState[outputId];
+  if (idx >= arr.length) return;
+
+  if (!el.querySelector('.hint-block')) el.innerHTML = '';
+
+  const block = document.createElement('div');
+  block.className = 'hint-block';
+  block.innerHTML = `<strong>${arr[idx].title}</strong><span>${arr[idx].text}</span>`;
+  el.appendChild(block);
+
+  hintState[outputId] = idx + 1;
+
+  if (hintState[outputId] >= arr.length && btn) {
+    btn.disabled = true;
+    btn.textContent = 'All hints shown';
+  }
+}
+
+function resetHints(outputId, btnId, placeholder) {
+  hintState[outputId] = 0;
+  const el  = $(outputId);
+  const btn = $(btnId);
+  if (el)  { el.innerHTML = ''; el.textContent = placeholder; }
+  if (btn) { btn.disabled = false; btn.textContent = 'Hint'; }
+}
+
+function showRandomQuestion() {
+  $('interviewPracticeQuestion').textContent =
+    interviewQuestions[Math.floor(Math.random() * interviewQuestions.length)];
+}
+
+/* =============================================================
+   TIMER
+   ============================================================= */
+const TIMER_SECONDS = 120;
+let timerSecs     = TIMER_SECONDS;
+let timerInterval = null;
+
+function updateTimerDisplay() {
+  const m = String(Math.floor(timerSecs / 60)).padStart(2, '0');
+  const s = String(timerSecs % 60).padStart(2, '0');
+  $('timer').textContent = `${m}:${s}`;
+  $('timer').setAttribute('aria-label', `${m} minutes ${s} seconds remaining`);
+}
+
+function updateTimerBtns() {
+  const running = timerInterval !== null;
+  const atStart = timerSecs === TIMER_SECONDS;
+  $('startTimerBtn').disabled  = running || !atStart;
+  $('pauseResumeBtn').disabled = atStart;
+  $('pauseResumeBtn').textContent = running ? 'Pause' : 'Resume';
+  $('resetTimerBtn').disabled  = atStart;
+}
+
+function tick() {
+  if (timerSecs > 0) {
+    timerSecs--;
+    updateTimerDisplay();
+    updateTimerBtns();
+  } else {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    updateTimerBtns();
+    alert('Time is up! Review your introduction, structure and conclusion.');
+  }
+}
+
+function startTimer() {
+  if (timerInterval || timerSecs !== TIMER_SECONDS) return;
+  timerInterval = setInterval(tick, 1000);
+  updateTimerBtns();
+}
+
+function togglePause() {
+  if (timerSecs === TIMER_SECONDS) return;
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  } else if (timerSecs > 0) {
+    timerInterval = setInterval(tick, 1000);
+  }
+  updateTimerBtns();
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerSecs     = TIMER_SECONDS;
+  updateTimerDisplay();
+  updateTimerBtns();
+}
+
+/* =============================================================
+   LANGUAGE TOGGLE
+   ============================================================= */
+let currentLanguage = 'en';
+
+const roText = {
+  nav: ['Email', 'CV', 'Discurs Public', 'Interviuri', 'Extracurricular'],
+  homeTitle: 'Alege ce vrei să îmbunătățești astăzi.',
+  homeLead: 'Mr. Premium îi ajută pe elevi și studenți să scrie emailuri formale, să creeze CV-uri mai bune, să vorbească cu încredere, să se pregătească pentru interviuri și să își dezvolte activitățile extracurriculare.',
+  mascotSubtitle: 'Un ghid politicos, încrezător și util, la dispoziția ta.',
+  emailTitle: 'Construiește, verifică și îmbunătățește un email formal.',
+  cvTitle: 'Creează un CV realist de student.',
+  speakingTitle: 'Exersează cu un cronometru și sugestii pentru discurs.',
+  interviewTitle: 'Exersează cu sfaturi și structuri pentru răspunsuri.',
+  extracurricularTitle: 'Dezvoltă abilități în afara clasei.',
+  footer: 'Mr. Premium — Asistent Expert pentru Studenți'
+};
+
+const enText = {
+  nav: ['Email', 'CV', 'Public Speaking', 'Interviews', 'Extracurricular'],
+  homeTitle: 'Choose what you want to improve today.',
+  homeLead: 'Mr. Premium helps high school and university students write formal emails, build better CVs, speak with confidence, prepare for interviews, and further help with their extracurricular activities.',
+  mascotSubtitle: 'A polite, confident, and helpful guide, at your service.',
+  emailTitle: 'Build, check, and improve a formal email.',
+  cvTitle: 'Create a realistic student CV.',
+  speakingTitle: 'Practice with a timer and speech hints.',
+  interviewTitle: 'Practice with tips and answer hints.',
+  extracurricularTitle: 'Build skills outside the classroom.',
+  footer: 'Mr. Premium — Student Assistant Expert'
+};
+
+function toggleLanguage() {
+  currentLanguage = currentLanguage === 'en' ? 'ro' : 'en';
+  applyLanguage(currentLanguage);
+}
+
+function applyLanguage(lang) {
+  const t = lang === 'ro' ? roText : enText;
+
+  document.documentElement.lang = lang;
+
+  const langToggle = $('langToggle');
+  if (langToggle) {
+    langToggle.textContent = lang === 'ro' ? 'EN' : 'RO';
+    langToggle.setAttribute(
+      'aria-label',
+      lang === 'ro' ? 'Change language to English' : 'Change language to Romanian'
+    );
+  }
+
+  document.querySelectorAll('#navMenu .nav-btn[data-section]').forEach((btn, i) => {
+    if (t.nav[i]) btn.textContent = t.nav[i];
+  });
+
+  document.querySelector('#home h1').textContent = t.homeTitle;
+  document.querySelector('#home .hero-text .lead').textContent = t.homeLead;
+  document.querySelector('.mascot-subtitle').textContent = t.mascotSubtitle;
+  document.querySelector('#email .section-heading h2').textContent = t.emailTitle;
+  document.querySelector('#cv .section-heading h2').textContent = t.cvTitle;
+  document.querySelector('#speaking .section-heading h2').textContent = t.speakingTitle;
+  document.querySelector('#interview .section-heading h2').textContent = t.interviewTitle;
+  document.querySelector('#extracurricular .section-heading h2').textContent = t.extracurricularTitle;
+
+  document.querySelector('footer p').innerHTML =
+    `${t.footer} &nbsp;·&nbsp;<span id="currentYear">${new Date().getFullYear()}</span>`;
+}
+
+/* =============================================================
+   INIT
+   ============================================================= */
+
+window.addEventListener('load', () => {
+  updateTimerDisplay();
+  updateTimerBtns();
+  setupAutosave();
+  applyLanguage(currentLanguage);
+  $('currentYear').textContent = new Date().getFullYear();
+});
+
+</script>
+</body>
+</html>

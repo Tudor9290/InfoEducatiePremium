@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A simple, aesthetic web project for InfoEducație." />
+  <title>ReadList — Track Your Books</title>
+
+  <!-- Google Fonts: distinctive pairing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ── CSS Variables (Chapter III: visual unity) ── */
+    :root {
+      --bg:       #f5f0e8;
+      --surface:  #fffdf7;
+      --text:     #1a1714;
+      --muted:    #7a7166;
+      --accent:   #c0392b;
+      --border:   #e0d9ce;
+      --radius:   10px;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'DM Sans', sans-serif;
+      --shadow:   0 2px 12px rgba(0,0,0,.08);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Skip link (Chapter III: accessibility) ── */
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 8px;
+      background: var(--accent);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      font-size: .9rem;
+      z-index: 100;
+    }
+    .skip-link:focus { left: 12px; }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: -.5px;
+    }
+    header h1 span { color: var(--accent); }
+
+    /* Dark-mode toggle (Chapter III: accessibility / UX) */
+    #theme-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 14px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: .85rem;
+      color: var(--muted);
+      transition: border-color .2s;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 780px;
+      margin: 2.5rem auto;
+      padding: 0 1.2rem;
+    }
+
+    /* ── Add-book form (Chapter II: content management) ── */
+    .add-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+    .add-form h2 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .form-row {
+      display: flex;
+      gap: .7rem;
+      flex-wrap: wrap;
+    }
+    .form-row input, .form-row select {
+      flex: 1;
+      min-width: 140px;
+      padding: .55rem .8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      font-family: var(--font-body);
+      font-size: .92rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-row input:focus, .form-row select:focus {
+      border-color: var(--accent);
+    }
+    .btn-add {
+      padding: .55rem 1.3rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: .92rem;
+      font-weight: 500;
+      transition: opacity .2s;
+    }
+    .btn-add:hover { opacity: .85; }
+    .error-msg {
+      margin-top: .6rem;
+      font-size: .82rem;
+      color: var(--accent);
+      min-height: 1rem;
+    }
+
+    /* ── Search + filter bar ── */
+    .toolbar {
+      display: flex;
+      gap: .7rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .toolbar input {
+      flex: 1;
+      min-width: 160px;
+      padding: .5rem .8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-family: var(--font-body);
+      font-size: .9rem;
+      color: var(--text);
+      outline: none;
+    }
+    .toolbar input:focus { border-color: var(--accent); }
+    .toolbar select {
+      padding: .5rem .8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-family: var(--font-body);
+      font-size: .9rem;
+      color: var(--text);
+      outline: none;
+    }
+
+    /* ── Stats bar (Chapter II: utility) ── */
+    .stats {
+      display: flex;
+      gap: 1.4rem;
+      margin-bottom: 1.4rem;
+      font-size: .85rem;
+      color: var(--muted);
+    }
+    .stats strong { color: var(--text); }
+
+    /* ── Book list ── */
+    #book-list {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .book-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow);
+      /* Chapter III: subtle entry animation */
+      animation: fadeUp .3s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .book-card .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-dot.reading  { background: #e67e22; }
+    .status-dot.read     { background: #27ae60; }
+    .status-dot.wishlist { background: #2980b9; }
+
+    .book-info { flex: 1; }
+    .book-info .title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+    }
+    .book-info .meta {
+      font-size: .8rem;
+      color: var(--muted);
+      margin-top: .15rem;
+    }
+
+    .book-actions { display: flex; gap: .5rem; }
+    .book-actions button {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 10px;
+      cursor: pointer;
+      font-size: .78rem;
+      color: var(--muted);
+      transition: color .2s, border-color .2s;
+    }
+    .book-actions button:hover { color: var(--accent); border-color: var(--accent); }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      padding: 3rem 1rem;
+      font-size: .95rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: .8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    /* ── Dark mode (Chapter III: accessibility / UX) ── */
+    body.dark {
+      --bg:      #111010;
+      --surface: #1c1b1a;
+      --text:    #ede9e0;
+      --muted:   #807a70;
+      --border:  #302e2c;
+    }
+
+    /* ── Responsive (Chapter III: adaptive design) ── */
+    @media (max-width: 520px) {
+      header { padding: 1rem; }
+      .form-row { flex-direction: column; }
+      .btn-add { width: 100%; }
+      .stats { flex-wrap: wrap; gap: .6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Accessibility: skip navigation (Chapter III) -->
+  <a class="skip-link" href="#book-list">Skip to book list</a>
+
+  <header>
+    <h1>Read<span>List</span></h1>
+    <!-- Dark mode toggle -->
+    <button id="theme-btn" aria-label="Toggle dark mode">🌙 Dark</button>
+  </header>
+
+  <main>
+
+    <!-- ── Add Book Form ── -->
+    <section class="add-form" aria-label="Add a book">
+      <h2>Add a book</h2>
+      <div class="form-row">
+        <input
+          type="text"
+          id="input-title"
+          placeholder="Title *"
+          maxlength="120"
+          aria-label="Book title"
+          autocomplete="off"
+        />
+        <input
+          type="text"
+          id="input-author"
+          placeholder="Author"
+          maxlength="80"
+          aria-label="Author name"
+          autocomplete="off"
+        />
+        <select id="input-status" aria-label="Reading status">
+          <option value="wishlist">Wishlist</option>
+          <option value="reading">Reading</option>
+          <option value="read">Read</option>
+        </select>
+        <button class="btn-add" id="btn-add" aria-label="Add book">Add</button>
+      </div>
+      <p class="error-msg" id="error-msg" role="alert" aria-live="polite"></p>
+    </section>
+
+    <!-- ── Toolbar: search + filter (Chapter III: internal search / ergonomics) ── -->
+    <div class="toolbar" role="search">
+      <input type="search" id="search" placeholder="🔍 Search by title or author…" aria-label="Search books" />
+      <select id="filter-status" aria-label="Filter by status">
+        <option value="all">All statuses</option>
+        <option value="wishlist">Wishlist</option>
+        <option value="reading">Reading</option>
+        <option value="read">Read</option>
+      </select>
+    </div>
+
+    <!-- ── Stats ── -->
+    <div class="stats" aria-live="polite" id="stats"></div>
+
+    <!-- ── Book List ── -->
+    <div id="book-list" role="list" aria-label="Book list"></div>
+
+  </main>
+
+  <footer>
+    ReadList &mdash; InfoEducație Web Demo &mdash; Built with vanilla HTML / CSS / JS
+  </footer>
+
+  <script>
+    /*
+     * ReadList — minimal vanilla JS SPA
+     *
+     * Key criteria covered:
+     *   Ch.I  – modular functions, localStorage persistence, no frameworks needed
+     *   Ch.II – CRUD functionality, content management via localStorage
+     *   Ch.III– search, filter, dark mode, responsive, accessibility (ARIA)
+     *   Ch.V  – input sanitization (XSS prevention via textContent, not innerHTML for user data)
+     */
+
+    // ── State ──────────────────────────────────────────────────────────────────
+    // Data stored in localStorage (Chapter II: offline storage)
+    const STORAGE_KEY = 'readlist_books_v1';
+
+    function loadBooks() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveBooks(books) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+    }
+
+    let books = loadBooks();
+
+    // ── Security: sanitize string input (Chapter V: XSS prevention) ──────────
+    // We never inject user text via innerHTML; we use textContent.
+    // This helper also strips leading/trailing whitespace and limits length.
+    function sanitize(str, maxLen = 200) {
+      return String(str).trim().slice(0, maxLen);
+    }
+
+    // ── DOM helpers ───────────────────────────────────────────────────────────
+    const $ = id => document.getElementById(id);
+
+    // ── Render ────────────────────────────────────────────────────────────────
+    function render() {
+      const query  = sanitize($('search').value).toLowerCase();
+      const filter = $('filter-status').value;
+
+      // Filter books
+      const visible = books.filter(b => {
+        const matchStatus = filter === 'all' || b.status === filter;
+        const matchQuery  = b.title.toLowerCase().includes(query) ||
+                            b.author.toLowerCase().includes(query);
+        return matchStatus && matchQuery;
+      });
+
+      // Stats
+      const total   = books.length;
+      const reading = books.filter(b => b.status === 'reading').length;
+      const read    = books.filter(b => b.status === 'read').length;
+      const stats   = $('stats');
+      // Use textContent (safe); build nodes manually
+      stats.innerHTML = '';
+      [
+        ['Total', total],
+        ['Reading', reading],
+        ['Read', read],
+      ].forEach(([label, val]) => {
+        const span = document.createElement('span');
+        span.textContent = `${label}: `;
+        const strong = document.createElement('strong');
+        strong.textContent = val;
+        span.appendChild(strong);
+        stats.appendChild(span);
+      });
+
+      // List
+      const list = $('book-list');
+      list.innerHTML = '';
+
+      if (visible.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'empty-state';
+        empty.textContent = books.length === 0
+          ? 'No books yet — add your first one above!'
+          : 'No books match your search.';
+        list.appendChild(empty);
+        return;
+      }
+
+      visible.forEach(book => {
+        const card = document.createElement('div');
+        card.className = 'book-card';
+        card.setAttribute('role', 'listitem');
+
+        // Status dot
+        const dot = document.createElement('span');
+        dot.className = `status-dot ${book.status}`;
+        dot.setAttribute('aria-label', book.status);
+
+        // Info
+        const info = document.createElement('div');
+        info.className = 'book-info';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'title';
+        titleEl.textContent = book.title;   // textContent — safe from XSS
+
+        const metaEl = document.createElement('div');
+        metaEl.className = 'meta';
+        metaEl.textContent = (book.author || 'Unknown author') + ' · ' + book.status;
+
+        info.appendChild(titleEl);
+        info.appendChild(metaEl);
+
+        // Actions
+        const actions = document.createElement('div');
+        actions.className = 'book-actions';
+
+        // Cycle status button
+        const cycleBtn = document.createElement('button');
+        const nextStatus = { wishlist: 'reading', reading: 'read', read: 'wishlist' };
+        cycleBtn.textContent = '↻ Status';
+        cycleBtn.setAttribute('aria-label', `Change status of ${book.title}`);
+        cycleBtn.addEventListener('click', () => {
+          book.status = nextStatus[book.status];
+          saveBooks(books);
+          render();
+        });
+
+        // Delete button
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '✕ Remove';
+        delBtn.setAttribute('aria-label', `Remove ${book.title}`);
+        delBtn.addEventListener('click', () => {
+          books = books.filter(b => b.id !== book.id);
+          saveBooks(books);
+          render();
+        });
+
+        actions.appendChild(cycleBtn);
+        actions.appendChild(delBtn);
+
+        card.appendChild(dot);
+        card.appendChild(info);
+        card.appendChild(actions);
+        list.appendChild(card);
+      });
+    }
+
+    // ── Add book ──────────────────────────────────────────────────────────────
+    function addBook() {
+      const title  = sanitize($('input-title').value);
+      const author = sanitize($('input-author').value);
+      const status = $('input-status').value;
+      const errEl  = $('error-msg');
+
+      // Validation (Chapter V: input validation)
+      if (!title) {
+        errEl.textContent = 'Please enter a book title.';
+        $('input-title').focus();
+        return;
+      }
+      errEl.textContent = '';
+
+      // Prevent duplicate titles (case-insensitive)
+      if (books.some(b => b.title.toLowerCase() === title.toLowerCase())) {
+        errEl.textContent = 'This book is already in your list.';
+        return;
+      }
+
+      const newBook = {
+        id:     Date.now(),   // simple unique ID
+        title,
+        author,
+        status,
+      };
+
+      books.push(newBook);
+      saveBooks(books);
+
+      // Clear inputs
+      $('input-title').value  = '';
+      $('input-author').value = '';
+      $('input-status').value = 'wishlist';
+
+      render();
+      $('input-title').focus();
+    }
+
+    // ── Event listeners ───────────────────────────────────────────────────────
+    $('btn-add').addEventListener('click', addBook);
+
+    // Allow Enter key in inputs to submit
+    ['input-title', 'input-author'].forEach(id => {
+      $(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') addBook();
+      });
+    });
+
+    $('search').addEventListener('input', render);
+    $('filter-status').addEventListener('change', render);
+
+    // ── Dark mode (Chapter III: user preferences) ─────────────────────────────
+    const themeBtn = $('theme-btn');
+    const DARK_KEY = 'readlist_dark';
+
+    function applyTheme(dark) {
+      document.body.classList.toggle('dark', dark);
+      themeBtn.textContent = dark ? '☀ Light' : '🌙 Dark';
+      localStorage.setItem(DARK_KEY, dark ? '1' : '0');
+    }
+
+    themeBtn.addEventListener('click', () => {
+      applyTheme(!document.body.classList.contains('dark'));
+    });
+
+    // Restore saved preference OR use OS preference
+    const saved = localStorage.getItem(DARK_KEY);
+    if (saved !== null) {
+      applyTheme(saved === '1');
+    } else {
+      applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    
+    // ── Initial render ────────────────────────────────────────────────────────
+    render();
+  </script>
+</body>
+</html>
